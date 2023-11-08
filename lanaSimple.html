@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ETS</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="lana.css" rel="stylesheet">
+</head>
+
+<body style="margin-top: 25px;">
+    <div class="container-fluid">
+        <div class="row" id="cards-container">
+            <!-- Kartu mata uang akan diisi secara dinamis di sini -->
+        </div>
+    </div>
+
+    <script>
+        function fetchData() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://apilayer.net/api/live?access_key=431235c35ffa358a17aa279cc9430643&pairs=EURUSD,EURGBP,GBPUSD,USDJPY,AUDUSD,USDCHF,NZDUSD,USDCAD,USDZAR', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    const currencyPairs = ["USDEUR", "USDTHB", "USDGBP", "USDJPY", "USDAUD", "USDCHF", "USDNZD", "USDCAD", "USDZAR"];
+
+                    const cardsContainer = document.getElementById('cards-container');
+
+                    currencyPairs.forEach(pair => {
+                        const card = document.createElement('div');
+                        card.className = 'col-md-3 mb-4';
+                        card.innerHTML = `
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div>
+                                            <p class="matauang">${pair.replace("USD", "USD ")}</p>
+                                            <p class="angka">${data.quotes[pair]}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        cardsContainer.appendChild(card);
+                    });
+                } else if (xhr.readyState === 4 && xhr.status !== 200) {
+                    console.error('Failed to fetch data.');
+                }
+            };
+            xhr.send();
+        }
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
